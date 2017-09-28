@@ -1,0 +1,296 @@
+<?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   design
+ * @package    TIG_Postcode
+ * @copyright  Copyright (c) 2012 Total Internet Group (http://www.totalinternetgroup.nl)
+ * @author     Total Internet Group (http://www.totalinternetgroup.nl)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php
+$formErrors = $this->getParentBlock()->formErrors;
+$formErrors = (!empty($formErrors['billing_errors'])) ? $formErrors['billing_errors'] : array();
+$helper = Mage::helper('onestepcheckout/checkout');
+    $billingFields['firstname'] = '
+        <div class="input-box input-firstname'.((in_array('firstname', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:firstname">'.$this->__('First Name').'<span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="billing[firstname]" id="billing:firstname" value="'.$this->getFirstname().'" />
+        </div>';
+    $billingFields['lastname'] = '
+        <div class="input-box input-lastname'.((in_array('lastname', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:lastname">'.$this->__('Last Name').' <span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="billing[lastname]" id="billing:lastname" value="'.$this->getLastname().'" />
+        </div>';
+    ?>
+<?php if(!$this->isCustomerLoggedIn() || in_array('email_registered', $formErrors)): ?>
+    <?php $billingFields['email'] = '
+        <div class="clearfix" id="onestepcheckout-email-error" '.((!in_array('email_registered', $formErrors)) ? 'style="display: none"' : '').'>
+            <div id="onestepcheckout-email-error-message" class="onestepcheckout-error">'.
+                ((in_array('email_registered', $formErrors)) ? $this->__('Email address already registered. Please <a href="#" onclick="login_popup.show(); return false;">login now</a> or use a different email address.') : $this->__('Invalid email address.'))
+            .'</div>
+        </div>';
+    ?>
+<?php endif; ?>
+<?php if(!$this->isCustomerLoggedIn()): ?>
+    <?php $billingFields['email'] = $billingFields['email'].'
+        <div class="input-box input-email'.((in_array('email', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:email">'.$this->__('Email Address').' <span class="required">*</span></label><br />
+            <input type="text" name="billing[email]" id="billing:email" value="'.$this->htmlEscape($this->getAddress()->getEmail()).'" title="'.$this->__('Email Address') .'" class="validate-email required-entry input-text" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+
+<?php if(!$this->settings['exclude_telephone']):?>
+    <?php $billingFields['telephone'] = '
+        <div class="input-box input-telephone'.((in_array('telephone', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:telephone">'.$this->__('Telephone').' <span class="required">*</span></label><br/>
+            <input type="text" name="billing[telephone]" value="'.$this->htmlEscape($this->getTelephone()).'" title="'.$this->__('Telephone').'" class="required-entry input-text" id="billing:telephone" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php if(!$this->settings['exclude_company']): ?>
+    <?php $billingFields['company'] = '
+        <div class="input-box input-company'.((in_array('company', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:company">'.$this->__('Company').'</label><br/>
+            <input type="text" name="billing[company]" value="'.$this->htmlEscape($this->getCompany()).'" title="'.$this->__('Company').'" class="input-text" id="billing:company" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php if(!$this->settings['exclude_fax']): ?>
+    <?php $billingFields['fax'] = '
+        <div class="input-box input-fax'.((in_array('fax', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:fax">'.$this->__('Fax').'</label><br/>
+            <input type="text" name="billing[fax]" value="'.$this->htmlEscape($this->getFax()).'" title="'.$this->__('Fax').'" class="input-text" id="billing:fax" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat'); ?>
+<?php if($_taxvat->isEnabled()): ?>
+    <?php $billingFields['taxvat'] =
+            $_taxvat->setTaxvat($this->getQuote()->getCustomerTaxvat())
+                ->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml();
+    ?>
+<?php endif; ?>
+
+<?php
+    try {
+        $_dob = $this->getLayout()->createBlock('customer/widget_dob');
+    } catch (Exception $e) {
+        $_dob = false;
+    }
+?>
+<?php
+    try {
+        $_gender = $this->getLayout()->createBlock('customer/widget_gender');
+    } catch (Exception $e) {
+        $_gender = false;
+    }
+?>
+
+<?php if (is_object($_dob) && $_dob->isEnabled()): ?>
+    <?php $billingFields['dob'] = '
+        <div class="field">
+            '.$_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml().'
+        </div>.';
+    ?>
+<?php endif; ?>
+<?php if (is_object($_gender) && $_gender->isEnabled()): ?>
+    <?php $billingFields['gender'] = '
+        <div class="field">
+            '.$_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml().'
+        </div>';
+    ?>
+<?php endif ?>
+
+
+<?php $billingFields = $this->getBillingFieldsOrder($billingFields);?>
+<?php foreach($billingFields as $key => $value):?>
+    <?php if(!empty($value['has_li'])):?>
+        <?php echo implode('',$value['fields']);?>
+    <?php else:?>
+        <li class="clearfix"><?php echo implode('',$value['fields']);?></li>
+    <?php endif;?>
+<?php endforeach;?>
+
+
+<li class="clearfix">
+    <div class="input-box input-country<?php echo in_array('country', $formErrors) ? ' input-error' : ''; ?>">
+        <label for="billing:country_id"><?php echo Mage::helper('tig_postcode')->__('Country'); ?> <span class="required">*</span></label><br />
+        <?php echo $this->getCountryHtmlSelect('billing'); ?>
+    </div>
+</li>
+
+<?php if(!$this->settings['exclude_region']): ?>
+<li class="clearfix" id="postcode-billing-region">
+        <div class="input-box input-region<?php echo  ((in_array('region', $formErrors)) ? ' input-error' : ''); ?>">
+            <label for="billing:region"><?php echo  Mage::helper('tig_postcode')->__('State/Province'); ?> <span class="required">*</span></label><br/>
+            <select id="billing:region_id" name="billing[region_id]" title="<?php echo  Mage::helper('tig_postcode')->__('State/Province'); ?>" class="validate-select" style="display:none">
+                <option value=""><?php echo  Mage::helper('tig_postcode')->__('Please select region, state or province'); ?></option>
+            </select>
+            <script type="text/javascript">
+                $("billing:region_id").setAttribute("defaultValue",  "<?php echo  $this->getRegionId(); ?>");
+            </script>
+            <input type="text" id="billing:region" name="billing[region]" value="<?php echo  $this->htmlEscape($this->getRegion()); ?>"  title="<?php echo  Mage::helper('tig_postcode')->__('State/Province'); ?>" class="required-entry input-text" style="display:none" />
+        </div>
+</li>
+<?php endif; ?>
+
+<li class="clearfix">
+    <div class="input-box input-postcode<?php echo ((in_array('postcode', $formErrors)) ? ' input-error' : ''); ?>" >
+    	<label for="billing:postcode"><?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code'); ?> <span class="required">*</span></label>
+        <img id="postcode-billing-please-wait" style="display:none;" src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" title="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" />
+        <br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code'); ?>" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->htmlEscape($this->getPostcode()); ?>" class="validate-zip-international required-entry input-text" />
+        <div style="display: none;" id="advice-validate:billing:postcode" class="validation-advice"><?php echo Mage::helper('tig_postcode')->__('Check that the Zip/Postal Code and the House Number correctly entered!') ?></div>
+	</div>
+    <div class="input-box input-house<?php echo ((in_array('telephone', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="billing:street2"><?php echo Mage::helper('tig_postcode')->__('House Number'); ?><span class="required">*</span></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('House Number'); ?>" name="billing[virtual:street2]" id="billing:virtual:street2" value="" class="required-entry input-text" />
+    </div>
+    <div class="input-box input-extension">
+        <label for="billing:street2"><?php echo Mage::helper('tig_postcode')->__('Extension'); ?></label>
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Extension'); ?>" name="billing[virtual:street3]" id="billing:virtual:street3" value="" class="input-text" />
+    </div>
+</li>
+<?php if (Mage::getStoreConfig('tig_postcode/exclude_fields/field_extra_is_enabled')): ?>
+<li class="clearfix">
+    <div class="input-box input-extra">
+        <label for="billing:virtual:street4"><?php echo Mage::helper('tig_postcode')->__('Extra'); ?></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Extra'); ?>" name="billing[virtual:street4]" id="billing:virtual:street4" value="" class="input-text" />
+    </div>
+</li>
+<?php endif; ?>
+<li class="clearfix">
+    <div class="input-box input-address<?php echo ((in_array('telephone', $formErrors)) ? ' input-error' : ''); ?>">
+    	<label for="billing:virtual:street1"><?php echo Mage::helper('tig_postcode')->__('Street Address'); ?><span class="required">*</span></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Street Address'); ?>" name="billing[virtual:street1]" id="billing:virtual:street1" value="" class="required-entry input-text" />
+	</div>
+</li>
+
+<li class="clearfix">
+    <div class="input-box input-city<?php echo ((in_array('city', $formErrors)) ? ' input-error' : ''); ?>">
+    	<label for="billing:city"><?php echo Mage::helper('tig_postcode')->__('City'); ?> <span class="required">*</span></label><br/>
+        <input type="text" name="billing[city]" value="<?php echo $this->htmlEscape($this->getCity()); ?>" title="<?php echo Mage::helper('tig_postcode')->__('City'); ?>" class="required-entry input-text" id="billing:city" />
+	</div>
+</li>
+
+<?php for ($i=1;$i<5;$i++): ?>
+<input type="hidden" name="billing[street][]" id="billing:street<?php echo $i ?>" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet($i)) ?>" />
+<?php endfor;?>
+
+<script type="text/javascript">
+//<![CDATA[
+    for (var i=1;i<5;i++) {
+        var _virtualField = 'billing:virtual:street'+i;
+        var _field = 'billing:street'+i;
+        if ($(_virtualField)) $(_virtualField).value = $(_field).value;
+    }
+    tigPostcodeUpdaterBilling = new TigPostcodeUpdater('<?php echo $this->getUrl('tig_postcode/onepage'); ?>', 'billing:postcode', 'billing:virtual:street2', 'billing:virtual:street1', 'billing:city', 'billing:country_id', 'postcode-billing-region','postcode-billing-please-wait');
+    document.observe('dom:loaded', function() {
+    	$('postcode-billing-please-wait').observe('tigpostcodeupdater:start', function(e)    {
+    		$('onestepcheckout-place-order').setAttribute('disabled', 'disabled');
+    	});
+        $('postcode-billing-please-wait').observe('tigpostcodeupdater:stop', function(e)    {
+            $('onestepcheckout-place-order').removeAttribute('disabled');
+        });
+    	$('onestepcheckout-place-order').observe('mousedown', function(e)    {
+            for (var i=1;i<5;i++) {
+                var _virtualField = 'billing:virtual:street'+i;
+                var _field = 'billing:street'+i;
+                if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+            }
+        });
+        $('onestepcheckout-form').observe('submit', function(e)    {
+            for (var i=1;i<5;i++) {
+                var _virtualField = 'billing:virtual:street'+i;
+                var _field = 'billing:street'+i;
+                if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+            }
+        });
+        if ($('billing-address-select')) {
+            $('billing-address-select').observe('change', function(e)    {
+                if ($('billing-address-select').value == '') {
+                	tigPostcodeUpdaterBilling.getData();
+                }
+            });
+        }
+        else {
+        	tigPostcodeUpdaterBilling.getData();
+        	//v3
+        }
+    });
+
+//]]>
+</script>
+
+<?php $billingFields = array(); ?>
+<?php if(!$this->isCustomerLoggedIn() && $helper->showCreateAccount()): ?>
+    <?php $billingFields['create_account'] = '
+        <div class="input-box">
+            <input id="id_create_account" type="checkbox" name="create_account" value="1" '.((isset($_POST['create_account']) && $_POST['create_account'] == '1') ? ' checked="checked"' : '').' />
+            <label for="id_create_account">'.$this->__('Create an account for later use').'</label>
+        </div>
+
+        <script>
+        document.observe("dom:loaded", function() {
+            $("id_create_account").observe("click", function(e) {
+                var element = e.element();
+                if(element.checked) {
+                    $("onestepcheckout-li-password").show();
+                }
+                else    {
+                    $("onestepcheckout-li-password").hide();
+                }
+            });
+        });
+        </script>';
+    ?>
+<?php endif; ?>
+<?php if($helper->showPasswords() && !$this->isCustomerLoggedIn()): ?>
+    <?php
+        //id="onestepcheckout-li-password"
+        $billingFields['password'] = '
+        <li id="onestepcheckout-li-password" '.(($helper->hidePasswords()) ? 'style="display: none;"':'').'>
+            <div class="input-box input-password'.((in_array('password', $formErrors)) ? ' input-error' : '').'">
+                <label for="billing:customer_password">'.$this->__('Password').'</label><br/>
+                <input type="password" class="required-entry validate-password input-text" value="'.((isset($_POST['billing']['customer_password'])) ? $_POST['billing']['customer_password'] : '').'" title="Password" id="billing:customer_password" name="billing[customer_password]"/>
+            </div>
+            <div class="input-box input-password'.((in_array('confirm_password', $formErrors)) ? ' input-error' : '').'">
+                <label for="billing:confirm_password">'.$this->__('Confirm password').'</label><br/>
+                <input type="password" class="required-entry validate-password input-text" value="'.((isset($_POST['billing']['confirm_password'])) ? $_POST['billing']['confirm_password'] : '').'" id="billing:confirm_password" title="Confirm Password" name="billing[confirm_password]"/>
+            </div>
+        </li>';
+    ?>
+<?php endif; ?>
+
+<?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+    <?php $billingFields['save_in_address_book'] = '
+        <li class="control">
+            <input type="checkbox" name="billing[save_in_address_book]" value="1" title="'.$this->__('Save in address book').'" id="billing:save_in_address_book" onchange="shipping.setSameAsBilling(false);"'.(($this->getAddress()->getSaveInAddressBook()) ? 'checked="checked"':'').' class="checkbox" /><label for="billing:save_in_address_book">'.$this->__('Save in address book').'</label>
+        </li>';
+    ?>
+<?php else:?>
+    <?php $billingFields['save_in_address_book'] = '
+        <li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>';
+    ?>
+<?php endif; ?>
+
+<?php $billingFields = $this->getBillingFieldsOrder($billingFields);?>
+<?php foreach($billingFields as $key => $value):?>
+    <?php if(!empty($value['has_li'])):?>
+        <?php echo implode('',$value['fields']);?>
+    <?php else:?>
+        <li class="clearfix"><?php echo implode('',$value['fields']);?></li>
+    <?php endif;?>
+<?php endforeach;?>

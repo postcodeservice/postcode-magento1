@@ -1,0 +1,187 @@
+<?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   design
+ * @package    TIG_Postcode
+ * @copyright  Copyright (c) 2012 Total Internet Group (http://www.totalinternetgroup.nl)
+ * @author     Total Internet Group (http://www.totalinternetgroup.nl)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php
+$formErrors = $this->getParentBlock()->formErrors;
+$formErrors = (!empty($formErrors['shipping_errors'])) ? $formErrors['shipping_errors'] : array();
+
+$helper = Mage::helper('onestepcheckout/checkout');
+    $shippingFields['firstname'] = '
+        <div class="input-box input-firstname'.((in_array('firstname', $formErrors)) ? ' input-error' : '').'">
+            <label for="shipping:firstname">'.$this->__('First Name').'<span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="shipping[firstname]" id="shipping:firstname" value="'.$this->getShippingFirstname().'" />
+        </div>';
+    $shippingFields['lastname'] = '
+        <div class="input-box input-lastname'.((in_array('lastname', $formErrors)) ? ' input-error' : '').'">
+            <label for="shipping:lastname">'.$this->__('Last Name').' <span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="shipping[lastname]" id="shipping:lastname" value="'.$this->getShippingLastname().'" />
+        </div>';
+    ?>
+
+<?php if(!$this->settings['exclude_telephone']):?>
+    <?php $shippingFields['telephone'] = '
+        <div class="input-box input-telephone'.((in_array('telephone', $formErrors)) ? ' input-error' : '').'">
+            <label for="shipping:telephone">'.$this->__('Telephone').' <span class="required">*</span></label><br/>
+            <input type="text" name="shipping[telephone]" value="'.$this->htmlEscape($this->getShippingTelephone()).'" title="'.$this->__('Telephone').'" class="required-entry input-text" id="shipping:telephone" />
+        </div>';
+    ?>
+<?php endif; ?>
+<?php if(!$this->settings['exclude_company']): ?>
+    <?php $shippingFields['company'] = '
+        <div class="input-box input-company'.((in_array('company', $formErrors)) ? ' input-error' : '').'">
+            <label for="shipping:company">'.$this->__('Company').'</label><br/>
+            <input type="text" name="shipping[company]" value="'.$this->htmlEscape($this->getShippingCompany()).'" title="'.$this->__('Company').'" class="input-text" id="shipping:company" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php if(!$this->settings['exclude_fax']): ?>
+    <?php $shippingFields['fax'] = '
+        <div class="input-box input-fax'.((in_array('fax', $formErrors)) ? ' input-error' : '').'">
+            <label for="shipping:fax">'.$this->__('Fax').'</label><br/>
+            <input type="text" name="shipping[fax]" value="'.$this->htmlEscape($this->getShippingFax()).'" title="'.$this->__('Fax').'" class="input-text" id="shipping:fax" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+    <?php $shippingFields['save_in_address_book'] = '
+        <li class="control">
+            <input type="checkbox" name="shipping[save_in_address_book]" value="1" title="'.$this->__('Save in address book').'" id="shipping:save_in_address_book" '.(($this->getAddress()->getSaveInAddressBook()) ? 'checked="checked"':'').' class="checkbox" /><label for="shipping:save_in_address_book">'.$this->__('Save in address book').'</label>
+        </li>';
+    ?>
+<?php else:?>
+    <?php $shippingFields['save_in_address_book'] = '
+        <li class="no-display"><input type="hidden" name="shipping[save_in_address_book]" value="1" /></li>';
+    ?>
+<?php endif; ?>
+
+<?php $shippingFields = $this->getshippingFieldsOrder($shippingFields);?>
+<?php foreach($shippingFields as $key => $value):?>
+    <?php if(!empty($value['has_li'])):?>
+        <?php echo implode('',$value['fields']);?>
+    <?php else:?>
+        <li class="clearfix"><?php echo implode('',$value['fields']);?></li>
+    <?php endif;?>
+<?php endforeach;?>
+
+
+<li class="clearfix">
+    <div class="input-box input-country<?php echo ((in_array('country', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="shipping:country_id"><?php echo Mage::helper('tig_postcode')->__('Country'); ?> <span class="required">*</span></label><br />
+        <?php echo $this->getCountryHtmlSelect('shipping'); ?>
+    </div>
+</li>
+<?php if(!$this->settings['exclude_region'] ): ?>
+<li class="clearfix" id="postcode-shipping-region">
+    <div class="input-box input-region<?php echo ((in_array('region', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="shipping:region"><?php echo Mage::helper('tig_postcode')->__('State/Province'); ?> <span class="required">*</span></label><br/>
+        <select id="shipping:region_id" name="shipping[region_id]" title="<?php echo Mage::helper('tig_postcode')->__('State/Province'); ?>" class="validate-select" style="display:none">
+            <option value=""><?php echo Mage::helper('tig_postcode')->__('Please select region, state or province'); ?></option>
+       </select>
+       <script type="text/javascript">
+       $("shipping:region_id").setAttribute("defaultValue",  "<?php echo $this->getShippingRegionId(); ?>");
+       </script>
+       <input type="text" id="shipping:region" name="shipping[region]" value="<?php echo $this->htmlEscape($this->getShippingRegion()); ?>"  title="<?php echo Mage::helper('tig_postcode')->__('State/Province'); ?>" class="required-entry input-text" style="display:none" />
+    </div>
+</li>
+<?php endif; ?>
+
+<li class="clearfix">
+    <div class="input-box input-postcode<?php echo ((in_array('postcode', $formErrors)) ? ' input-error' : ''); ?>" >
+        <label for="shipping:postcode"><?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code'); ?> <span class="required">*</span></label>
+        <img id="postcode-shipping-please-wait" style="display:none;" src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" title="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" />
+        <br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code'); ?>" name="shipping[postcode]" id="shipping:postcode" value="<?php echo $this->htmlEscape($this->getShippingPostcode()); ?>" class="validate-zip-international required-entry input-text" />
+        <div style="display: none;" id="advice-validate:shipping:postcode" class="validation-advice"><?php echo Mage::helper('tig_postcode')->__('Check that the Zip/Postal Code and the House Number correctly entered!') ?></div>
+    </div>
+    <div class="input-box input-house<?php echo ((in_array('telephone', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="shipping:street2"><?php echo Mage::helper('tig_postcode')->__('House Number'); ?><span class="required">*</span></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('House Number'); ?>" name="shipping[virtual:street1]" id="shipping:virtual:street2" value="" class="required-entry input-text" />
+    </div>
+    <div class="input-box input-extension">
+        <label for="shipping:street2"><?php echo Mage::helper('tig_postcode')->__('Extension'); ?></label>
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Extension'); ?>" name="shipping[virtual:street3]" id="shipping:virtual:street3" value="" class="input-text" />
+    </div>
+</li>
+<?php if (Mage::getStoreConfig('tig_postcode/exclude_fields/field_extra_is_enabled')): ?>
+<li class="clearfix">
+    <div class="input-box input-extra">
+        <label for="shipping:virtual:street4"><?php echo Mage::helper('tig_postcode')->__('Extra'); ?></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Extra'); ?>" name="shipping[virtual:street4]" id="shipping:virtual:street4" value="" class="input-text" />
+    </div>
+</li>
+<?php endif; ?>
+<li class="clearfix">
+    <div class="input-box input-address<?php echo ((in_array('telephone', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="shipping:street1"><?php echo Mage::helper('tig_postcode')->__('Street Address'); ?><span class="required">*</span></label><br />
+        <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Street Address'); ?>" name="shipping[virtual:street1]" id="shipping:virtual:street1" value="" class="required-entry input-text" />
+    </div>
+</li>
+
+<li class="clearfix">
+    <div class="input-box input-city<?php echo ((in_array('city', $formErrors)) ? ' input-error' : ''); ?>">
+        <label for="shipping:city"><?php echo Mage::helper('tig_postcode')->__('City'); ?> <span class="required">*</span></label><br/>
+        <input type="text" name="shipping[city]" value="<?php echo $this->htmlEscape($this->getShippingCity()); ?>" title="<?php echo Mage::helper('tig_postcode')->__('City'); ?>" class="required-entry input-text" id="shipping:city" />
+    </div>
+</li>
+
+<?php for ($i=1;$i<5;$i++): ?>
+<input type="hidden" name="shipping[street][]" id="shipping:street<?php echo $i ?>" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet($i)) ?>" />
+<?php endfor;?>
+
+<script type="text/javascript">
+//<![CDATA[
+    for (var i=1;i<5;i++) {
+        var _virtualField = 'shipping:virtual:street'+i;
+        var _field = 'shipping:street'+i;
+        if ($(_virtualField)) $(_virtualField).value = $(_field).value;
+    }
+    tigPostcodeUpdaterShipping = new TigPostcodeUpdater('<?php echo $this->getUrl('tig_postcode/onepage'); ?>', 'shipping:postcode', 'shipping:virtual:street2', 'shipping:virtual:street1', 'shipping:city', 'shipping:country_id', 'postcode-shipping-region', 'postcode-shipping-please-wait');
+    document.observe('dom:loaded', function() {
+        $('postcode-shipping-please-wait').observe('tigpostcodeupdater:start', function(e)    {
+            $('onestepcheckout-place-order').setAttribute('disabled', 'disabled');
+        });
+        $('postcode-shipping-please-wait').observe('tigpostcodeupdater:stop', function(e)    {
+            $('onestepcheckout-place-order').removeAttribute('disabled');
+        });
+        $('onestepcheckout-place-order').observe('mousedown', function(e)    {
+            for (var i=1;i<5;i++) {
+                var _virtualField = 'shipping:virtual:street'+i;
+                var _field = 'shipping:street'+i;
+                if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+            }
+        });
+        $('onestepcheckout-form').observe('submit', function(e)    {
+            for (var i=1;i<5;i++) {
+                var _virtualField = 'shipping:virtual:street'+i;
+                var _field = 'shipping:street'+i;
+                if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+            }
+        });
+        if ($('shipping-address-select')) {
+            $('shipping-address-select').observe('change', function(e)    {
+                if ($('shipping-address-select').value == '') {
+                	tigPostcodeUpdaterShipping.getData();
+                }
+            });
+        }
+        else {
+            tigPostcodeUpdaterShipping.getData();
+        }
+    });
+//]]>
+</script>

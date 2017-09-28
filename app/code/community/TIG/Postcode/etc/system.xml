@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @package    TIG_Postcode
+ * @copyright  Copyright (c) 2012 Total Internet Group (http://www.totalinternetgroup.nl)
+ * @author     Total Internet Group (http://www.totalinternetgroup.nl)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+ -->
+<config>
+    <tabs>
+        <totalconfig translate="label" module="tig_postcode">
+            <label>Total Config</label>
+            <sort_order>99999</sort_order>
+        </totalconfig>
+    </tabs>
+
+    <sections>
+        <tig_postcode translate="label" module="tig_postcode">
+            <label>TIG Postcode Check</label>
+            <tab>totalconfig</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>306</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label comment" module="tig_postcode">
+                    <comment>See http://www.postcodeservice.nl for more details</comment>
+                    <label>General</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <version translate="label">
+                            <label>Version</label>
+                            <frontend_model>tig_postcode/adminhtml_config_panel_content_version</frontend_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </version>
+                        <client_id translate="label">
+                            <label>Client ID</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <validate>required-entry</validate>
+                            <validate>required-entry validate-digits</validate>
+                        </client_id>
+                        <secure_code translate="label">
+                            <label>Secure Code</label>
+                            <frontend_type>password</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <validate>required-entry</validate>
+                        </secure_code>
+                        <domain translate="label">
+                            <label>Domain</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <validate>required-entry</validate>
+                        </domain>
+                    </fields>
+                </general>
+                <exclude_fields translate="label comment" module="tig_postcode">
+                    <comment>Here you can make changes to which fields the user is presented with in a checkout page</comment>
+                    <label>Exclude/include fields</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <field_extra_is_enabled translate="label">
+                            <label>Enable Extra field</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </field_extra_is_enabled>
+                    </fields>
+                </exclude_fields>
+                <log translate="label comment" module="tig_postcode">
+                    <label>Log Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <log_is_enabled translate="label">
+                            <label>Write exceptions to the exceptions log file</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>File is located in {{base_dir}}/var/log</comment>
+                        </log_is_enabled>
+                    </fields>
+                </log>
+
+            </groups>
+        </tig_postcode>
+    </sections>
+</config>

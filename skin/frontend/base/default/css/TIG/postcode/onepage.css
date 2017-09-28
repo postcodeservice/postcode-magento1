@@ -1,0 +1,68 @@
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   design
+ * @package    TIG_Postcode
+ * @copyright  Copyright (c) 2012 Total Internet Group (http://www.totalinternetgroup.nl)
+ * @author     Total Internet Group (http://www.totalinternetgroup.nl)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+#checkoutSteps form .readonly,
+#onestepcheckout-form li.clearfix .readonly,
+.customer-address-form form#form-validate .readonly
+{
+    background: #DADADA !important;
+}
+#checkoutSteps #postcode-billing-please-wait,
+#checkoutSteps #postcode-shipping-please-wait,
+.customer-address-form form#form-validate #postcode-shipping-please-wait
+{
+    padding-left: 16px;
+}
+#onestepcheckout-form div.checkoutcontainer div.checkoutcontainer div.input-postcode
+{
+    width: 30%;
+}
+#onestepcheckout-form div.checkoutcontainer div.input-house,
+#onestepcheckout-form div.checkoutcontainer div.input-extension
+{
+    float: left;
+    width: 28%;
+}
+#onestepcheckout-form div.checkoutcontainer div.input-house .input-text,
+#onestepcheckout-form div.checkoutcontainer div.input-extension .input-text
+{
+     width: 57%;
+}
+#onestepcheckout-form div.checkoutcontainer div.input-region
+{
+    float: none;
+    width: 100%;
+}
+#onestepcheckout-form div.checkoutcontainer div.input-region select { width: 85% !important; }
+
+#checkoutSteps form .tig-validation-failed,
+#onestepcheckout-form div.checkoutcontainer .tig-validation-failed,
+.customer-address-form form#form-validate .tig-validation-failed
+{
+    border:1px dashed #eb340a; background:#faebe7;
+}
+#checkoutSteps form .tig-validation-passed,
+#onestepcheckout-form div.checkoutcontainer .tig-validation-passed,
+.customer-address-form form#form-validate .tig-validation-passed
+{
+    border:1px solid #446423; background:#eff5ea;
+}
+
+#checkoutSteps form .field-small, .customer-address-form form#form-validate .field-small { width: 138px; }
+#checkoutSteps form .field-small .input-box, .customer-address-form form#form-validate .field-small .input-box { width: 123px; }
+#checkoutSteps form .field-small .input-box input, .customer-address-form form#form-validate .field-small .input-box input { width: 116px; }
+
+#onestepcheckout-form div.checkoutcontainer div.input-extra { width: 100%;}
+#onestepcheckout-form div.checkoutcontainer div.input-extra .input-text { width: 83%;}

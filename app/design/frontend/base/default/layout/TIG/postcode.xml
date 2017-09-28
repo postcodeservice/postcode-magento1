@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+/**
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+*
+* @package    TIG_Postcode
+* @copyright  Copyright (c) 2012 Total Internet Group (http://www.totalinternetgroup.nl)
+* @author     Total Internet Group (http://www.totalinternetgroup.nl)
+* @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<layout version="0.1.0">
+    <checkout_onepage_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/TIG/postcode/onepage.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/TIG/postcode/onepage.css</name></action>
+        </reference>
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate"><template>TIG/postcode/onepage/billing.phtml</template></action>
+        </reference>
+        <reference name="checkout.onepage.shipping">
+            <action method="setTemplate"><template>TIG/postcode/onepage/shipping.phtml</template></action>
+        </reference>
+    </checkout_onepage_index>
+
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/TIG/postcode/onepage.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/TIG/postcode/onepage.css</name></action>
+        </reference>
+
+        <reference name="onestepcheckout.billing.address">
+            <action method="setTemplate">
+                <template helper="tig_postcode/getOSBilligTemplate" />
+            </action>
+        </reference>
+        <reference name="onestepcheckout.shipping.address">
+            <action method="setTemplate">
+                <template helper="tig_postcode/getOSShippingTemplate" />
+            </action>
+        </reference>
+    </onestepcheckout_index_index>
+
+    <customer_address_form>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/TIG/postcode/onepage.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/TIG/postcode/onepage.css</name></action>
+        </reference>
+        <reference name="customer_address_edit">
+            <action method="setTemplate"><template>TIG/postcode/address/edit.phtml</template></action>
+        </reference>
+    </customer_address_form>
+</layout>
