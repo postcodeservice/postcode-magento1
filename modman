@@ -3,7 +3,7 @@ app/design/frontend/base/default/layout/TIG/postcode.xml
 app/design/frontend/base/default/template/TIG/postcode/
 app/etc/modules/TIG_Postcode.xml
 app/locale/de_DE/TIG_Postcode.csv
-app/locale/de_DE/TIG_Postcode.csv
-app/locale/de_DE/TIG_Postcode.csv
+app/locale/en_US/TIG_Postcode.csv
+app/locale/nl_NL/TIG_Postcode.csv
 skin/frontend/base/default/css/TIG/postcode/
 skin/frontend/base/default/js/TIG/postcode/

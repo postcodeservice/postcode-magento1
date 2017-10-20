@@ -22,7 +22,6 @@
  */
 class TIG_PostCode_Model_Address
 {
-
   /**
    * cURL and authentication options
    * @var array
@@ -58,55 +57,56 @@ class TIG_PostCode_Model_Address
      * @param string $housenumber
      */
     public function search($postcode, $housenumber) {
-        $url = 'http://postcode.yoja.nl/v5_mixed_pro.php?' . http_build_query(
-            array(
-                'postcode' => $postcode,
-                'huisnummer' => $housenumber,
-                'client_id' => $this->_options['client_id'],
-                'secure_code' => $this->_options['secure_code'],
-                'domain' => Mage::getStoreConfig('tig_postcode/general/domain'),
-                'remote_ip' => $this->getRemoteIp()
-            )
-        );
+        $url = 'https://postcode.tig.nl/api/v3/json/getAddress/index.php?' . http_build_query(
+                array(
+                    'postcode'    => $postcode,
+                    'huisnummer'  => $housenumber,
+                    'client_id'   => $this->_options['client_id'],
+                    'secure_code' => $this->_options['secure_code'],
+                    'domain'      => $_SERVER['HTTP_HOST'],
+                    'remote_ip'   => $_SERVER['REMOTE_ADDR']
+                )
+            );
 
         try {
             if (!function_exists('curl_init')) {
                 throw new Exception('сURL library is not installed');
             }
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
-	    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_FAILONERROR, $this->_options['failonerror']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, $this->_options['returntransfer']);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->_options['connecttimeout']);
             $postcode_answer = curl_exec($ch);
+
             if ($postcode_answer === false) {
                 throw new Exception(curl_error($ch));
             }
             curl_close($ch);
-            $postcode_answer = trim($postcode_answer);
-            $result = simplexml_load_string($postcode_answer);
-            if (!$result) {
-                throw new Exception('The answer is not an XML string');
-            }
+
             $address = array();
-            if ((string)$result->straatnaam) {
-                $address['straatnaam'] = (string)$result->straatnaam;
+
+            $result = json_decode($postcode_answer);
+
+            if (!$result) {
+                throw new Exception('The answer is not a JSON string');
             }
-            if ((string)$result->woonplaats) {
-                $address['plaatsnaam'] = (string)$result->woonplaats;
+
+            if ($result->success) {
+                $address['straatnaam'] = $result->straatnaam;
+                $address['woonplaats'] = $result->woonplaats;
             }
 
             return $address;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($this->_logIsEnabled) {
                 Mage::logException($e);
             }
 
             return false;
         }
-
     }
 
     /**
@@ -124,5 +124,4 @@ class TIG_PostCode_Model_Address
             }
         }
     }
-
 }
