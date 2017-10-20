@@ -99,7 +99,7 @@ TigPostcodeUpdater.prototype = {
     	if (window.location.protocol == "https:") {
     		redirectUrl = this.loadUrl.replace('http://','https://');
     	}
-	
+
         new Ajax.Request(
 			redirectUrl+'nladdress',
 			{
@@ -130,7 +130,7 @@ TigPostcodeUpdater.prototype = {
     	var result = response.responseText.evalJSON();
     	if (result.status == 'success') {
     		this.streetEl.value = result.data.straatnaam;
-    		this.cityEl.value = result.data.plaatsnaam;
+    		this.cityEl.value = result.data.woonplaats;
     	}
     	else {
         	this._activate(this.streetEl);

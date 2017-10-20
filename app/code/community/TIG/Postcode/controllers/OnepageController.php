@@ -15,7 +15,6 @@
 
 class TIG_PostCode_OnepageController extends Mage_Core_Controller_Front_Action
 {
-
     /**
      * Get Street Name and City Name by Postcode and House Number
      * and then send this data in JSON
@@ -38,7 +37,7 @@ class TIG_PostCode_OnepageController extends Mage_Core_Controller_Front_Action
             }
         }
         $this->getResponse()
-            ->setHeader('Content-type', 'application/json')
+            ->setHeader('Content-type', 'application/json', true)
             ->setBody(Zend_Json::encode($response))
             ->sendResponse();
         exit;
