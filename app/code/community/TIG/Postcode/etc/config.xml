@@ -17,7 +17,7 @@
 <config>
     <modules>
         <TIG_Postcode>
-            <version>0.1.2</version>
+            <version>1.1.2</version>
         </TIG_Postcode>
     </modules>
 
