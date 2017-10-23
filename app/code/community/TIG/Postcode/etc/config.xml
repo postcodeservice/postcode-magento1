@@ -69,6 +69,11 @@
 
     <default>
         <tig_postcode>
+            <general>
+                <client_id>1177</client_id>
+                <secure_code>9SRLYBCALURPE2B</secure_code>
+                <version_number>v3</version_number>
+            </general>
             <settings>
             </settings>
         </tig_postcode>

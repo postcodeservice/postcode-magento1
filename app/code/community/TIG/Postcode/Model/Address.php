@@ -29,6 +29,7 @@ class TIG_PostCode_Model_Address
     protected $_options = array(
         'client_id'	=> '',
         'secure_code'	=> '',
+        'version_number' => '',
         'failonerror' => 1,
         'returntransfer'	=> 1,
         'connecttimeout'	=> 5
@@ -46,7 +47,8 @@ class TIG_PostCode_Model_Address
     public function __construct()
     {
         $this->_options['client_id'] = urlencode(Mage::getStoreConfig('tig_postcode/general/client_id'));
-        $this->_options['secure_code'] =  urlencode(Mage::getStoreConfig('tig_postcode/general/secure_code'));
+        $this->_options['secure_code'] = urlencode(Mage::getStoreConfig('tig_postcode/general/secure_code'));
+        $this->_options['version_number'] = urlencode(Mage::getStoreConfig('tig_postcode/general/version_number'));
         $this->_logIsEnabled = Mage::getStoreConfig('tig_postcode/log/log_is_enabled');
     }
 
@@ -57,7 +59,7 @@ class TIG_PostCode_Model_Address
      * @param string $housenumber
      */
     public function search($postcode, $housenumber) {
-        $url = 'https://postcode.tig.nl/api/v3/json/getAddress/index.php?' . http_build_query(
+        $url = 'https://postcode.tig.nl/api/' . $this->_options['version_number'] . '/json/getAddress/index.php?' . http_build_query(
                 array(
                     'postcode'    => $postcode,
                     'huisnummer'  => $housenumber,
