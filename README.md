@@ -1,7 +1,7 @@
 # TIG Postcode extension
 
 ### Information
-This is the official TIG Postcode extension that integrates the TIG Postcode service directly into your Magento 1 environment. For more information about our Postcode service please visit https://postcodeservice.nl/
+This is the official TIG Postcode extension that integrates the TIG Postcode Service directly into your Magento 1 environment. For more information about our Postcode Service please visit https://postcodeservice.nl/
 
 To make use of the TIG Postcode extension you are required to have a Client ID and Secure Code. If you do not have those yet feel free to request a test account by contacting us by calling 020-21 81 000 or sending an e-mail to support@postcodeservice.nl.
 
@@ -20,7 +20,7 @@ For questions about the installation of our extension please contact us by calli
 To get our extension to work you'll have to provide your Client ID and Secure Code. You can do this by opening up the Configuration page under the System tab.
 
 Once you've opened the configuration page open up the "TIG Postcode Check" section at the left of your screen.
-Magento will now show you a page where you can configure the extension. Here you can provide your Client ID, your Secure Code and the Domain you are using to call our service.
+Magento will now show you a page where you can configure the extension. Here you can provide your Client ID, your Secure Code and the Domain you are using to call our Service.
 
 When you are done providing the required information, clear your Magento cache and try out your fresh installed Postcode check in your checkout.
 
